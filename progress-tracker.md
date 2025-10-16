@@ -9,7 +9,7 @@
 | 4 | Offline sync and persistence | Pending | TBD |
 | 5 | Testing, hardening, and release prep | Pending | TBD |
 
-## Milestone 1 – Project Initialization (In Progress)
+## Milestone 1 – Project Initialization (Complete)
 ### Objectives
 - Establish the repository structure for frontend and backend following architecture rules.
 - Prepare baseline TypeScript configuration and strictness settings.
@@ -19,8 +19,8 @@
 - [x] Create progress tracking framework.
 - [x] Scaffold React Native frontend structure (Expo + TypeScript).
 - [x] Scaffold backend service structure (Express + TypeScript + Drizzle placeholders).
-- [ ] Capture next steps and blockers, if any.
+- [x] Capture next steps and blockers, if any.
 
 ### Notes
-- Adhere to strict TypeScript settings and linting standards once tooling is installed.
-- No dependencies installed yet; package manifests will define requirements for upcoming work.
+- Frontend and backend now include strict TypeScript, linting baselines, navigation scaffolding, and environment-aware config.
+- Awaiting dependency installation and Expo account linkage (username: brashad) before running builds.
