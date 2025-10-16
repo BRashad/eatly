@@ -9,5 +9,8 @@
     "type-check": "npm run type-check --workspaces",
     "type-check:watch": "npm run type-check:watch --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8"
   }
 }

@@ -1,15 +1,17 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { RootStackParamList } from '@navigation/root-navigator';
+import { RootStackParamList } from "@navigation/root-navigator";
 
 type ProductDetailScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'ProductDetail'
+  "ProductDetail"
 >;
 
-export function ProductDetailScreen({ route }: ProductDetailScreenProps): React.JSX.Element {
+export function ProductDetailScreen({
+  route,
+}: ProductDetailScreenProps): React.JSX.Element {
   const { productId } = route.params;
 
   return (
@@ -23,13 +25,13 @@ export function ProductDetailScreen({ route }: ProductDetailScreenProps): React.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 16,
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
   },
 });

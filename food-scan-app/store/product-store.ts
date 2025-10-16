@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-import type { Product } from '@app-types/product-types';
+import type { Product } from "@app-types/product-types";
 
 interface ProductStore {
   products: Product[];
@@ -12,6 +12,6 @@ interface ProductStore {
 export const useProductStore = create<ProductStore>((set) => ({
   products: [],
   selectedProduct: null,
-  setSelectedProduct: (product) => set({ selectedProduct: product }),
-  hydrateProducts: (items) => set({ products: items }),
+  setSelectedProduct: (product): void => set({ selectedProduct: product }),
+  hydrateProducts: (items): void => set({ products: items }),
 }));

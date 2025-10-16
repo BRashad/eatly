@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-import { apiClient } from '@services/api-client';
-import type { Product } from '@app-types/product-types';
-import { AppError } from '@utils/app-error';
+import { apiClient } from "@services/api-client";
+import type { Product } from "@app-types/product-types";
+import { AppError } from "@utils/app-error";
 
 interface UseScanProductResult {
   scanProduct: (barcode: string) => Promise<void>;
@@ -20,14 +20,16 @@ export function useScanProduct(): UseScanProductResult {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiClient.get<Product>(`/products/barcode/${barcode}`);
+      const response = await apiClient.get<Product>(
+        `/api/products/barcode/${barcode}`
+      );
       setData(response.data);
     } catch (err) {
       setData(null);
       if (err instanceof AppError) {
         setError(err);
       } else {
-        setError(new AppError('FETCH_FAILED', 'Failed to fetch product'));
+        setError(new AppError("FETCH_FAILED", "Failed to fetch product"));
       }
     } finally {
       setLoading(false);

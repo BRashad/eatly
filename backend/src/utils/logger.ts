@@ -7,10 +7,15 @@ interface BaseLogContext {
 type LogContext = BaseLogContext & Record<string, unknown>;
 
 export function logInfo(message: string, context: LogContext = {}): void {
-  const { level, timestamp, message: _omitMessage, ...safeContext } = context;
-  console.log(
+  const {
+    level: _level,
+    timestamp: _timestamp,
+    message: _omitMessage,
+    ...safeContext
+  } = context;
+  console.warn(
     JSON.stringify({
-      level: 'INFO',
+      level: "INFO",
       timestamp: new Date().toISOString(),
       message,
       context: safeContext,
@@ -18,11 +23,20 @@ export function logInfo(message: string, context: LogContext = {}): void {
   );
 }
 
-export function logError(message: string, error: Error, context: LogContext = {}): void {
-  const { level, timestamp, message: _omitMessage, ...safeContext } = context;
+export function logError(
+  message: string,
+  error: Error,
+  context: LogContext = {}
+): void {
+  const {
+    level: _level,
+    timestamp: _timestamp,
+    message: _omitMessage,
+    ...safeContext
+  } = context;
   console.error(
     JSON.stringify({
-      level: 'ERROR',
+      level: "ERROR",
       timestamp: new Date().toISOString(),
       message,
       errorName: error.name,

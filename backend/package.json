@@ -8,15 +8,25 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "cross-env NODE_ENV=test jest --passWithNoTests"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^8.10.2",
+    "eslint-plugin-prettier": "^4.2.5",
     "@types/express": "^4.17.21",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.1.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "~5.3.3",
-    "eslint": "^8.57.0"
+    "typescript": "~5.3.3"
   }
 }
