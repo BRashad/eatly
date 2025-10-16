@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
 import { apiClient } from '@services/api-client';
-import { Product } from '@types/product-types';
+import type { Product } from '@app-types/product-types';
 import { AppError } from '@utils/app-error';
 
 interface UseScanProductResult {
@@ -23,6 +23,7 @@ export function useScanProduct(): UseScanProductResult {
       const response = await apiClient.get<Product>(`/products/barcode/${barcode}`);
       setData(response.data);
     } catch (err) {
+      setData(null);
       if (err instanceof AppError) {
         setError(err);
       } else {

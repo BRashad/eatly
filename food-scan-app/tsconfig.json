@@ -22,7 +22,7 @@
       "@hooks/*": ["hooks/*"],
       "@services/*": ["services/*"],
       "@store/*": ["store/*"],
-      "@types/*": ["types/*"],
+      "@app-types/*": ["types/*"],
       "@utils/*": ["utils/*"],
       "@constants/*": ["constants/*"],
       "@config/*": ["config/*"],

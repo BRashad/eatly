@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { Product } from '@types/product-types';
+import type { Product } from '@app-types/product-types';
 
 interface ProductStore {
   products: Product[];
