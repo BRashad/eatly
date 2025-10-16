@@ -19,12 +19,19 @@ export async function getProductByBarcode(
 
   const { barcode } = parseResult.data;
 
-  const product = await findProductByBarcode(barcode);
+  try {
+    const product = await findProductByBarcode(barcode);
 
-  if (!product) {
-    res.status(404).json({ error: "PRODUCT_NOT_FOUND" });
-    return;
+    if (!product) {
+      res.status(404).json({ error: "PRODUCT_NOT_FOUND" });
+      return;
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({
+      error: "INTERNAL_ERROR",
+      message: "An error occurred while fetching the product",
+    });
   }
-
-  res.status(200).json(product);
 }
