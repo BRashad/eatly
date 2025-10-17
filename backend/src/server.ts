@@ -6,7 +6,10 @@ import { logInfo } from "@utils/logger";
 import { testDatabaseConnection, closeDatabase } from "@config/database";
 import { productsRouter } from "@routes/products-routes";
 
-async function startServer(port: number, maxRetries: number = 10): Promise<void> {
+async function startServer(
+  port: number,
+  maxRetries: number = 10,
+): Promise<void> {
   if (maxRetries <= 0) {
     throw new Error(`Failed to find available port after multiple attempts`);
   }
@@ -14,31 +17,42 @@ async function startServer(port: number, maxRetries: number = 10): Promise<void>
   // Test database connection before starting server
   const dbConnected = await testDatabaseConnection();
   if (!dbConnected) {
-    throw new Error('Database connection failed - cannot start server');
+    throw new Error("Database connection failed - cannot start server");
   }
 
   const app = express();
 
-  app.use(cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
-      
-      // Allow any localhost origin for development
-      if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') || origin.startsWith('http://0.0.0.0:')) {
-        return callback(null, true);
-      }
-      
-      // Check against configured origins
-      if (environment.corsOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      
-      callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true
-  }));
-  
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+
+        // Allow any localhost origin for development
+        try {
+          const url = new URL(origin);
+          if (
+            url.hostname === "localhost" ||
+            url.hostname === "127.0.0.1" ||
+            url.hostname === "0.0.0.0"
+          ) {
+            return callback(null, true);
+          }
+        } catch {
+          // Invalid URL, fall through to deny
+        }
+
+        // Check against configured origins
+        if (environment.corsOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        callback(new Error("Not allowed by CORS"));
+      },
+      credentials: true,
+    }),
+  );
+
   app.use(express.json());
 
   app.get("/healthz", (_req, res) => {
@@ -78,14 +92,14 @@ startServer(environment.port).catch((error) => {
 });
 
 // Graceful shutdown handling
-process.on('SIGTERM', async () => {
-  logInfo('Received SIGTERM, shutting down gracefully', { action: 'shutdown' });
+process.on("SIGTERM", async () => {
+  logInfo("Received SIGTERM, shutting down gracefully", { action: "shutdown" });
   await closeDatabase();
   process.exit(0);
 });
 
-process.on('SIGINT', async () => {
-  logInfo('Received SIGINT, shutting down gracefully', { action: 'shutdown' });
+process.on("SIGINT", async () => {
+  logInfo("Received SIGINT, shutting down gracefully", { action: "shutdown" });
   await closeDatabase();
   process.exit(0);
 });
