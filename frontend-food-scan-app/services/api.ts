@@ -77,7 +77,7 @@ class ApiService {
   }
 
   async getProductByBarcode(barcode: string): Promise<ApiResponse<ProductDetail>> {
-    return this.request<ProductDetail>(`/products/barcode/${barcode}`);
+    return this.request<ProductDetail>(`/products/barcode/${encodeURIComponent(barcode)}`);
   }
 
   async searchProducts(
