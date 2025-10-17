@@ -21,6 +21,8 @@ const router = Router();
 
 
 
+
+
 // Original endpoint - check local database only
 router.get(
   "/barcode/:barcode",

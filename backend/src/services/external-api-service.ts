@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { environment } from "@config/environment";
+
 // Temporary logger functions until utils are implemented
 interface LogContext {
   [key: string]: unknown;
@@ -59,16 +61,16 @@ interface OpenFoodFactsSearchResponse {
 interface TransformedProduct {
   barcode: string;
   name: string;
-  brand: string;
-  description: string;
+  brand?: string;
+  description?: string;
   ingredients: string[];
   healthScore?: number;
   allergens: string[];
   warnings: string[];
-  nutritionInfo: Record<string, unknown>;
-  imageUrl: string;
+  nutritionInfo?: Record<string, unknown>;
+  imageUrl?: string;
   source: string;
-  externalId: string;
+  externalId?: string;
 }
 
 /**
@@ -84,13 +86,18 @@ class ExternalApiService {
   private usdaClient: any;
 
   constructor() {
-    // Open Food Facts API client
+    // Open Food Facts API client with authentication
     this.openFoodFactsClient = axios.create({
-      baseURL: "https://world.openfoodfacts.org/api/v0",
+      baseURL: environment.openFoodFacts.baseUrl + "/api/v0",
       timeout: 15000,
       headers: {
-        "User-Agent": "FoodScanApp/1.0",
+        "User-Agent": environment.openFoodFacts.userAgent,
         accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      auth: {
+        username: environment.openFoodFacts.username,
+        password: environment.openFoodFacts.password,
       },
     });
 
@@ -275,7 +282,7 @@ class ExternalApiService {
    * Parse and clean ingredients list
    */
   private extractIngredients(ingredientsText?: string): string[] {
-    if (!ingredientsText) return [];
+    if (!ingredientsText || typeof ingredientsText !== 'string') return [];
 
     return ingredientsText
       .toLowerCase()
@@ -290,7 +297,7 @@ class ExternalApiService {
    * Extract allergens from allergen tags
    */
   private extractAllergens(allergens: string): string[] {
-    if (!allergens) return [];
+    if (!allergens || typeof allergens !== 'string') return [];
 
     return allergens
       .toLowerCase()
@@ -334,7 +341,7 @@ class ExternalApiService {
    * Safely extract number from nutriments, handling various formats
    */
   private safeExtractNumber(value: string | undefined): number | undefined {
-    if (value === null || value === undefined) return undefined;
+    if (value === null || value === undefined || typeof value !== 'string') return undefined;
 
     const num = parseFloat(value.replace(/[^\d.-]/g, ""));
     return isNaN(num) ? undefined : num;

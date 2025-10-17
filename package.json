@@ -2,7 +2,7 @@
   "name": "eatly-workspace",
   "private": true,
   "workspaces": [
-    "food-scan-app",
+    "eatly",
     "backend"
   ],
   "scripts": {

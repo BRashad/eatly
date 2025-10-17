@@ -6,6 +6,12 @@ interface EnvironmentConfig {
   databaseUrl: string;
   logLevel: "error" | "warn" | "info" | "debug";
   corsOrigins: string[];
+  openFoodFacts: {
+    username: string;
+    password: string;
+    userAgent: string;
+    baseUrl: string;
+  };
 }
 
 function requireEnv(name: string, fallback?: string): string {
@@ -68,4 +74,12 @@ export const environment: EnvironmentConfig = {
   ),
   logLevel: validateLogLevel(process.env.LOG_LEVEL),
   corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:8081,http://localhost:8082,http://localhost:8080,http://localhost:3000').split(','),
+  openFoodFacts: {
+    username: requireEnv("OPENFOODFACTS_USERNAME"),
+    password: requireEnv("OPENFOODFACTS_PASSWORD"),
+    userAgent: requireEnv("OPENFOODFACTS_USER_AGENT", "FoodScanApp/1.0 (unknown@example.com)"),
+    baseUrl: nodeEnv === "development" 
+      ? "https://world.openfoodfacts.org" 
+      : "https://world.openfoodfacts.org",
+  },
 };
