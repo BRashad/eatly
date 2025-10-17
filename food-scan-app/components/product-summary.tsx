@@ -7,9 +7,7 @@ interface ProductSummaryProps {
   product: Product;
 }
 
-export function ProductSummary({
-  product,
-}: ProductSummaryProps): React.JSX.Element {
+export function ProductSummary({ product }: ProductSummaryProps): React.JSX.Element {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{product.name}</Text>

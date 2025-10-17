@@ -19,14 +19,14 @@ export function logInfo(message: string, context: LogContext = {}): void {
       timestamp: new Date().toISOString(),
       message,
       context: safeContext,
-    })
+    }),
   );
 }
 
 export function logError(
   message: string,
   error: Error,
-  context: LogContext = {}
+  context: LogContext = {},
 ): void {
   const {
     level: _level,
@@ -43,6 +43,6 @@ export function logError(
       errorMessage: error.message,
       stack: error.stack,
       context: safeContext,
-    })
+    }),
   );
 }

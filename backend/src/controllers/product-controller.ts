@@ -5,7 +5,7 @@ import { BarcodeParamSchema } from "@validators/product-validator";
 
 export async function getProductByBarcode(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   const parseResult = BarcodeParamSchema.safeParse(req.params);
 
@@ -28,7 +28,7 @@ export async function getProductByBarcode(
     }
 
     res.status(200).json(product);
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "An error occurred while fetching the product",

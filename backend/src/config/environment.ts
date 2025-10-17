@@ -7,8 +7,8 @@ interface EnvironmentConfig {
   logLevel: "error" | "warn" | "info" | "debug";
 }
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
+function requireEnv(name: string, fallback?: string): string {
+  const value = process.env[name] ?? fallback;
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);
   }
@@ -16,7 +16,7 @@ function requireEnv(name: string): string {
 }
 
 function validateNodeEnv(
-  value: string | undefined
+  value: string | undefined,
 ): EnvironmentConfig["nodeEnv"] {
   const validEnvs: EnvironmentConfig["nodeEnv"][] = [
     "development",
@@ -33,14 +33,14 @@ function validatePort(value: string | undefined): number {
   const port = Number(value ?? 5000);
   if (Number.isNaN(port) || port < 1 || port > 65535) {
     throw new Error(
-      `Invalid PORT value: ${value}. Must be a number between 1 and 65535.`
+      `Invalid PORT value: ${value}. Must be a number between 1 and 65535.`,
     );
   }
   return port;
 }
 
 function validateLogLevel(
-  value: string | undefined
+  value: string | undefined,
 ): EnvironmentConfig["logLevel"] {
   const validLevels: EnvironmentConfig["logLevel"][] = [
     "error",
@@ -54,9 +54,16 @@ function validateLogLevel(
   return "info";
 }
 
+const nodeEnv = validateNodeEnv(process.env.NODE_ENV);
+
 export const environment: EnvironmentConfig = {
-  nodeEnv: validateNodeEnv(process.env.NODE_ENV),
+  nodeEnv,
   port: validatePort(process.env.PORT),
-  databaseUrl: requireEnv("DATABASE_URL"),
+  databaseUrl: requireEnv(
+    "DATABASE_URL",
+    nodeEnv === "development"
+      ? "postgresql://postgres:postgres@localhost:5432/foodscan"
+      : undefined,
+  ),
   logLevel: validateLogLevel(process.env.LOG_LEVEL),
 };

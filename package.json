@@ -8,9 +8,19 @@
   "scripts": {
     "type-check": "npm run type-check --workspaces",
     "type-check:watch": "npm run type-check:watch --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "dev": "npm --workspace backend run dev",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "devDependencies": {
-    "prettier": "^2.8.8"
+    "prettier": "^3.3.3"
+  },
+  "main": "App.tsx",
+  "version": "1.0.0",
+  "dependencies": {
+    "expo": "~54.0.13",
+    "react": "19.1.0",
+    "react-native": "0.81.4"
   }
 }

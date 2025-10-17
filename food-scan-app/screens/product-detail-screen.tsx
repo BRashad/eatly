@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { RootStackParamList } from "@navigation/root-navigator";
@@ -9,15 +9,16 @@ type ProductDetailScreenProps = NativeStackScreenProps<
   "ProductDetail"
 >;
 
-export function ProductDetailScreen({
-  route,
-}: ProductDetailScreenProps): React.JSX.Element {
+export function ProductDetailScreen(
+  { route }: ProductDetailScreenProps,
+): React.JSX.Element {
   const { productId } = route.params;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Product Detail Placeholder</Text>
+      <Text style={styles.title}>Product Detail</Text>
       <Text>{`Product ID: ${productId}`}</Text>
+      <Text style={styles.placeholder}>Detailed product view coming soon.</Text>
     </View>
   );
 }
@@ -25,13 +26,16 @@ export function ProductDetailScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: 16,
+    backgroundColor: "#FFFFFF",
   },
   title: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 16,
+  },
+  placeholder: {
+    marginTop: 12,
+    color: "#6B7280",
   },
 });

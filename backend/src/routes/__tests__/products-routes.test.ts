@@ -5,7 +5,7 @@ import app from "../../test/test-server";
 describe("GET /api/products/barcode/:barcode", () => {
   it("returns product for known barcode", async () => {
     const response = await request(app).get(
-      "/api/products/barcode/012345678901"
+      "/api/products/barcode/012345678901",
     );
 
     expect(response.status).toBe(200);
@@ -17,7 +17,7 @@ describe("GET /api/products/barcode/:barcode", () => {
 
   it("returns 404 for unknown barcode", async () => {
     const response = await request(app).get(
-      "/api/products/barcode/000000000000"
+      "/api/products/barcode/000000000000",
     );
 
     expect(response.status).toBe(404);

@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 export function PreferencesScreen(): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Preferences Placeholder</Text>
-      <Text>Customize dietary preferences and alerts here.</Text>
+      <Text style={styles.title}>Preferences</Text>
+      <Text style={styles.placeholder}>User preferences settings coming soon.</Text>
     </View>
   );
 }
@@ -13,13 +13,16 @@ export function PreferencesScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: 16,
+    backgroundColor: "#FFFFFF",
   },
   title: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 16,
+  },
+  placeholder: {
+    marginTop: 12,
+    color: "#6B7280",
   },
 });
