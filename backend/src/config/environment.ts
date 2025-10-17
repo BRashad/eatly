@@ -67,5 +67,5 @@ export const environment: EnvironmentConfig = {
       : undefined,
   ),
   logLevel: validateLogLevel(process.env.LOG_LEVEL),
-  corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:8081,http://localhost:8080,http://localhost:3000').split(','),
+  corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:8081,http://localhost:8082,http://localhost:8080,http://localhost:3000').split(','),
 };

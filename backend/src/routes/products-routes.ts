@@ -15,8 +15,11 @@ import {
   BarcodeParamSchema,
   BulkImportSchema,
 } from "@validators/product-validator";
+import { productRepository } from "@repositories/product-repository";
 
 const router = Router();
+
+
 
 // Original endpoint - check local database only
 router.get(

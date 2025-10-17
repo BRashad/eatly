@@ -20,7 +20,22 @@ async function startServer(port: number, maxRetries: number = 10): Promise<void>
   const app = express();
 
   app.use(cors({
-    origin: environment.corsOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      
+      // Allow any localhost origin for development
+      if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') || origin.startsWith('http://0.0.0.0:')) {
+        return callback(null, true);
+      }
+      
+      // Check against configured origins
+      if (environment.corsOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true
   }));
   
