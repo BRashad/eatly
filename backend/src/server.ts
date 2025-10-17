@@ -5,11 +5,14 @@ import { environment } from "@config/environment";
 import { logInfo } from "@utils/logger";
 import { productsRouter } from "@routes/products-routes";
 
-async function startServer(port: number): Promise<void> {
+async function startServer(port: number, maxRetries: number = 10): Promise<void> {
+  if (maxRetries <= 0) {
+    throw new Error(`Failed to find available port after multiple attempts`);
+  }
   const app = express();
 
   app.use(cors({
-    origin: ['http://localhost:8081', 'http://localhost:8080', 'http://localhost:3000'],
+    origin: environment.corsOrigins,
     credentials: true
   }));
   
@@ -35,7 +38,7 @@ async function startServer(port: number): Promise<void> {
           logInfo("Port in use, retrying", { port });
           server.close(() => {
             setTimeout(() => {
-              startServer(port + 1)
+              startServer(port + 1, maxRetries - 1)
                 .then(resolve)
                 .catch(reject);
             }, 1000);

@@ -59,6 +59,10 @@ const moveDirectories = async (userInput) => {
       if (fs.existsSync(oldDirPath)) {
         if (userInput === "y") {
           const newDirPath = path.join(root, exampleDir, dir);
+          // Remove target if it exists to avoid EEXIST error
+          if (fs.existsSync(newDirPath)) {
+            await fs.promises.rm(newDirPath, { recursive: true, force: true });
+          }
           await fs.promises.rename(oldDirPath, newDirPath);
           console.log(`➡️ /${dir} moved to /${exampleDir}/${dir}.`);
         } else {
@@ -106,7 +110,18 @@ rl.question(
       moveDirectories(userInput).finally(() => rl.close());
     } else {
       console.log("❌ Invalid input. Please enter 'Y' or 'N'.");
-      rl.close();
+      rl.question(
+        "Do you want to move existing files to /app-example instead of deleting them? (Y/n): ",
+        (retryAnswer) => {
+          const retryInput = retryAnswer.trim().toLowerCase() || "y";
+          if (retryInput === "y" || retryInput === "n") {
+            moveDirectories(retryInput).finally(() => rl.close());
+          } else {
+            console.log("❌ Invalid input. Exiting.");
+            rl.close();
+          }
+        }
+      );
     }
   }
 );

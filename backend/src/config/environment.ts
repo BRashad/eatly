@@ -5,6 +5,7 @@ interface EnvironmentConfig {
   port: number;
   databaseUrl: string;
   logLevel: "error" | "warn" | "info" | "debug";
+  corsOrigins: string[];
 }
 
 function requireEnv(name: string, fallback?: string): string {
@@ -66,4 +67,5 @@ export const environment: EnvironmentConfig = {
       : undefined,
   ),
   logLevel: validateLogLevel(process.env.LOG_LEVEL),
+  corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:8081,http://localhost:8080,http://localhost:3000').split(','),
 };

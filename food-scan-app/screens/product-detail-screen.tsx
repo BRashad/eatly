@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { RootStackParamList } from "@navigation/root-navigator";
+import { COLORS } from "@constants/colors";
 
 type ProductDetailScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -27,15 +28,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.BACKGROUND_PRIMARY,
   },
   title: {
     fontSize: 20,
     fontWeight: "700",
     marginBottom: 16,
+    color: COLORS.TEXT_PRIMARY,
   },
   placeholder: {
     marginTop: 12,
-    color: "#6B7280",
+    color: COLORS.TEXT_SECONDARY,
   },
 });
