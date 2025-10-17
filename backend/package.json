@@ -9,12 +9,21 @@
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts --ignore-pattern jest.config.ts",
     "type-check": "tsc --noEmit",
-    "test": "cross-env NODE_ENV=test jest --passWithNoTests"
+    "test": "cross-env NODE_ENV=test jest --passWithNoTests",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
+    "@types/pg": "^8.15.5",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
     "express": "^4.19.2",
+    "pg": "^8.16.3",
+    "postgres": "^3.4.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -24,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
     "cross-env": "^7.0.3",
+    "drizzle-kit": "^0.31.5",
     "eslint": "9.37.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
@@ -31,7 +41,6 @@
     "prettier": "3.3.3",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
-    
     "tslib": "^2.8.1",
     "tsx": "^4.20.6",
     "typescript": "~5.3.3",
