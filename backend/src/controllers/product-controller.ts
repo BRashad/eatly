@@ -1,24 +1,14 @@
 import type { Request, Response } from "express";
 
+import { logError } from "@utils/logger";
 import { findProductByBarcode } from "@services/product-service";
 import { productDataPipeline } from "@services/product-data-pipeline";
-import { BarcodeParamSchema } from "@validators/product-validator";
 
 export async function getProductByBarcode(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const parseResult = BarcodeParamSchema.safeParse(req.params);
-
-  if (!parseResult.success) {
-    res.status(400).json({
-      error: "INVALID_BARCODE",
-      details: parseResult.error.flatten().fieldErrors,
-    });
-    return;
-  }
-
-  const { barcode } = parseResult.data;
+  const { barcode } = req.validatedParams!;
 
   try {
     const product = await findProductByBarcode(barcode);
@@ -29,7 +19,15 @@ export async function getProductByBarcode(
     }
 
     res.status(200).json(product);
-  } catch {
+  } catch (error) {
+    logError(
+      "Failed to fetch product from database",
+      error instanceof Error ? error : new Error(String(error)),
+      {
+        barcode,
+        action: "controller_db_fetch_error",
+      },
+    );
     res.status(500).json({
       error: "INTERNAL_ERROR",
       message: "An error occurred while fetching the product",
@@ -45,25 +43,15 @@ export async function fetchProductFromExternal(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const parseResult = BarcodeParamSchema.safeParse(req.params);
-
-  if (!parseResult.success) {
-    res.status(400).json({
-      error: "INVALID_BARCODE",
-      details: parseResult.error.flatten().fieldErrors,
-    });
-    return;
-  }
-
-  const { barcode } = parseResult.data;
+  const { barcode } = req.validatedParams!;
 
   try {
     const product = await productDataPipeline.fetchAndStoreProduct(barcode);
 
     if (!product) {
-      res.status(404).json({ 
+      res.status(404).json({
         error: "PRODUCT_NOT_FOUND",
-        message: "Product not found in external APIs" 
+        message: "Product not found in external APIs",
       });
       return;
     }
@@ -71,12 +59,21 @@ export async function fetchProductFromExternal(
     res.status(200).json({
       success: true,
       product,
-      message: "Product successfully fetched and stored from external data source"
+      message:
+        "Product successfully fetched and stored from external data source",
     });
-  } catch {
+  } catch (error) {
+    logError(
+      "Failed to fetch product from external API",
+      error instanceof Error ? error : new Error(String(error)),
+      {
+        barcode,
+        action: "controller_fetch_error",
+      },
+    );
     res.status(500).json({
       error: "EXTERNAL_FETCH_ERROR",
-      message: "Failed to fetch product from external APIs"
+      message: "Failed to fetch product from external APIs",
     });
   }
 }
@@ -89,35 +86,65 @@ export async function bulkImportProducts(
   res: Response,
 ): Promise<void> {
   try {
-    const { searchTerms, limitPerTerm = 10 } = req.body;
+    const { searchTerms, limitPerTerm = 10 } = req.validatedBody!;
 
-    if (!searchTerms || !Array.isArray(searchTerms) || searchTerms.length === 0) {
+    if (
+      !searchTerms ||
+      !Array.isArray(searchTerms) ||
+      searchTerms.length === 0 ||
+      searchTerms.some(
+        (term) => typeof term !== "string" || term.trim().length === 0,
+      )
+    ) {
       res.status(400).json({
         error: "INVALID_REQUEST",
-        message: "searchTerms is required and must be a non-empty array"
+        message:
+          "searchTerms is required and must be a non-empty array of valid strings",
       });
       return;
     }
 
     if (searchTerms.length > 5) {
       res.status(400).json({
-        error: "INVALID_REQUEST", 
-        message: "Maximum 5 search terms allowed"
+        error: "INVALID_REQUEST",
+        message: "Maximum 5 search terms allowed",
       });
       return;
     }
 
-    const results = await productDataPipeline.importProductsBySearch(searchTerms, limitPerTerm);
+    if (
+      typeof limitPerTerm !== "number" ||
+      limitPerTerm < 1 ||
+      limitPerTerm > 50
+    ) {
+      res.status(400).json({
+        error: "INVALID_REQUEST",
+        message: "limitPerTerm must be a number between 1 and 50",
+      });
+      return;
+    }
+
+    const results = await productDataPipeline.importProductsBySearch(
+      searchTerms,
+      limitPerTerm,
+    );
 
     res.status(200).json({
       success: true,
       results,
-      message: `Import completed: ${results.imported} products imported, ${results.duplicates} duplicates, ${results.errors} errors`
+      message: `Import completed: ${results.imported} products imported, ${results.duplicates} duplicates, ${results.errors} errors`,
     });
-  } catch {
+  } catch (error) {
+    logError(
+      "Failed to bulk import products",
+      error instanceof Error ? error : new Error(String(error)),
+      {
+        action: "controller_bulk_import_error",
+      },
+    );
     res.status(500).json({
       error: "BULK_IMPORT_ERROR",
-      message: "Failed to bulk import products"
+      message: "Failed to bulk import products",
     });
   }
 }
