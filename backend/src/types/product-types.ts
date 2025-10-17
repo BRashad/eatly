@@ -2,6 +2,8 @@
  * Comprehensive product data structure
  * Includes all fields needed for full product analysis and display
  */
+import type { NutritionInfo } from "@models/products-schema";
+
 export interface ProductDetail {
   id: string;
   name: string;
@@ -12,7 +14,7 @@ export interface ProductDetail {
   healthScore?: number; // 1-10 scale
   allergens: string[];
   warnings: string[];
-  nutritionInfo?: string; // JSON string
+  nutritionInfo?: NutritionInfo;
   imageUrl?: string;
   source: string; // 'manual', 'openfoodfacts', 'usda', etc.
   externalId?: string; // ID from external source

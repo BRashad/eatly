@@ -1,3 +1,4 @@
+
 CREATE TABLE "ingredient_analysis" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
@@ -15,7 +16,7 @@ CREATE TABLE "product_ingredients" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"product_id" uuid NOT NULL,
 	"ingredient_name" text NOT NULL,
-	"is_top_level" text DEFAULT 'true' NOT NULL,
+	"is_top_level" boolean DEFAULT true NOT NULL,
 	"position" integer,
 	"percentage" integer,
 	"added_at" timestamp DEFAULT now() NOT NULL

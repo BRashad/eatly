@@ -5,11 +5,38 @@ import {
   timestamp, 
   decimal, 
   integer, 
+  boolean,
+  jsonb,
   index,
   uniqueIndex
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 // Import db from the main database configuration
 export { db } from "@config/database";
+
+/**
+ * Nutrition information interface for JSONB column
+ * Provides type safety for nutrition data stored in database
+ */
+export interface NutritionInfo {
+  calories?: number;
+  protein?: number; // grams
+  carbohydrates?: number; // grams
+  fat?: number; // grams
+  saturatedFat?: number; // grams
+  transFat?: number; // grams
+  cholesterol?: number; // mg
+  sodium?: number; // mg
+  dietaryFiber?: number; // grams
+  sugars?: number; // grams
+  vitaminA?: number; // IU
+  vitaminC?: number; // mg
+  calcium?: number; // mg
+  iron?: number; // mg
+  potassium?: number; // mg
+  servingSize?: string; // e.g., "100g" or "1 cup"
+  servingsPerContainer?: number;
+}
 
 /**
  * Products table - stores product information and health analysis
@@ -26,7 +53,7 @@ export const productsTable = pgTable('products', {
   healthScore: integer('health_score'), // 1-10 scale, null if not calculated
   allergens: text('allergens').array().notNull().default([]),
   warnings: text('warnings').array().notNull().default([]),
-  nutritionInfo: text('nutrition_info'), // JSON string for nutrition facts
+  nutritionInfo: jsonb('nutrition_info').$type<NutritionInfo>(), // JSONB for structured nutrition data
   imageUrl: text('image_url'),
   source: text('source').notNull().default('manual'), // 'manual', 'openfoodfacts', 'usda', etc
   externalId: text('external_id'), // ID from external source
@@ -37,8 +64,11 @@ export const productsTable = pgTable('products', {
   barcodeIdx: index('idx_products_barcode').on(table.barcode),
   // Index for search by name
   nameIdx: index('idx_products_name').on(table.name),
-  // Unique constraint on external source+ID to prevent duplicates
-  sourceExternalIdIdx: uniqueIndex('idx_products_source_external_id').on(table.source, table.externalId),
+  // Unique constraint on external source+ID when externalId is not null
+  // Only enforce uniqueness for products from external APIs, manual entries can have null externalId
+  sourceExternalIdIdx: uniqueIndex('idx_products_source_external_id')
+    .on(table.source, table.externalId)
+    .where(sql`${table.externalId} IS NOT NULL`),
 }));
 
 /**
@@ -68,7 +98,7 @@ export const ingredientAnalysisTable = pgTable('ingredient_analysis', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull().unique(),
   commonNames: text('common_names').array().notNull().default([]), // Alternative names
-  riskLevel: text('risk_level', { enum: ['HIGH', 'MEDIUM', 'LOW'] }).notNull().default('LOW'),
+  riskLevel: text('risk_level', { enum: ['HIGH', 'MEDIUM', 'LOW'] }).notNull().default('LOW'), // 'HIGH', 'MEDIUM', or 'LOW'
   healthImpact: text('health_impact'), // Description of health effects
   regulatoryStatus: text('regulatory_status'), // 'BANNED', 'RESTRICTED', 'APPROVED', etc
   sources: text('sources').array().notNull().default([]), // References to studies/regulations
@@ -87,9 +117,9 @@ export const productIngredientsTable = pgTable('product_ingredients', {
   id: uuid('id').primaryKey().defaultRandom(),
   productId: uuid('product_id').references(() => productsTable.id, { onDelete: 'cascade' }).notNull(),
   ingredientName: text('ingredient_name').notNull(),
-  isTopLevel: text('is_top_level').notNull().default('true'), // 'true'/'false' string
+  isTopLevel: boolean('is_top_level').notNull().default(true),
   position: integer('position'), // Order in ingredients list
-  percentage: integer('percentage'), // Percentage if declared
+  percentage: integer('percentage'), // Percentage if declared (0-100)
   addedAt: timestamp('added_at').defaultNow().notNull(),
 }, (table) => ({
   productIdIdx: index('idx_product_ingredients_product_id').on(table.productId),

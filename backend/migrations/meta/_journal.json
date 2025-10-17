@@ -8,6 +8,27 @@
       "when": 1760720340746,
       "tag": "0000_milky_onslaught",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760721540608,
+      "tag": "0001_clever_bloodstorm",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760721740504,
+      "tag": "0002_known_nuke",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1760722195152,
+      "tag": "0003_petite_namor",
+      "breakpoints": true
     }
   ]
 }

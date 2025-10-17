@@ -1,6 +1,23 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import type { ProductDetail } from "@app-types/product-types";
-import { db, productsTable } from "@models/products-schema";
+import { db, productsTable, productIngredientsTable, ingredientAnalysisTable } from "@models/products-schema";
+
+/**
+ * Validation helper functions for product data
+ * Ensures data integrity and prevents invalid values
+ */
+
+function validatePercentage(percentage?: number): void {
+  if (percentage !== undefined && (percentage < 0 || percentage > 100)) {
+    throw new Error(`Percentage must be between 0 and 100, received: ${percentage}`);
+  }
+}
+
+function validateRiskLevel(riskLevel?: string): void {
+  if (riskLevel && !['HIGH', 'MEDIUM', 'LOW'].includes(riskLevel)) {
+    throw new Error(`Invalid risk level: must be 'HIGH', 'MEDIUM', or 'LOW', received: ${riskLevel}`);
+  }
+}
 
 /**
  * Repository layer for product data access
@@ -57,6 +74,9 @@ async function findByBarcode(barcode: string): Promise<ProductDetail | null> {
  */
 async function create(productData: Omit<ProductDetail, 'id' | 'createdAt' | 'updatedAt'>): Promise<ProductDetail> {
   try {
+    // Validate product data
+    // Note: percentage validation will be added when we have ingredient creation functions
+    
     const [newProduct] = await db
       .insert(productsTable)
       .values({
@@ -147,7 +167,7 @@ async function getPaginated(page: number = 1, limit: number = 25): Promise<Produ
       .from(productsTable)
       .limit(limit)
       .offset(offset)
-      .orderBy(productsTable.createdAt);
+      .orderBy(desc(productsTable.createdAt));
 
     return products as ProductDetail[];
   } catch (error) {
