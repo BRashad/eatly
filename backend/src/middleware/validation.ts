@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { ZodSchema, ZodError } from "zod";
+import type { BarcodeParam, BulkImportRequest } from "@validators/product-validator";
 
 /**
  * Middleware factory that creates request body validation
@@ -15,7 +16,7 @@ export function validateRequest<BodyType = unknown>(
       const validationResult = schema.parse(req.body);
       
       // Attach validated data to request object
-      req.validatedBody = validationResult;
+      req.validatedBody = validationResult as BulkImportRequest;
       
       next();
     } catch (error) {
@@ -56,7 +57,7 @@ export function validateParams<ParamsType = unknown>(
       const validationResult = schema.parse(req.params);
       
       // Attach validated params to request object
-      req.validatedParams = validationResult;
+      req.validatedParams = validationResult as BarcodeParam;
       
       next();
     } catch (error) {
