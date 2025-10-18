@@ -3,12 +3,19 @@ import type { Request, Response } from "express";
 import { logError } from "@utils/logger";
 import { findProductByBarcode } from "@services/product-service";
 import { productDataPipeline } from "@services/product-data-pipeline";
+import { hasBarcodeParams, hasBulkImportBody } from "@app-types/express-extensions";
+import type { BarcodeParam, BulkImportRequest } from "@validators/product-validator";
 
 export async function getProductByBarcode(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const { barcode } = req.validatedParams!;
+  if (!hasBarcodeParams(req)) {
+    res.status(400).json({ error: "INVALID_BARCODE" });
+    return;
+  }
+  
+  const { barcode } = req.validatedParams;
 
   try {
     const product = await findProductByBarcode(barcode);
@@ -43,7 +50,12 @@ export async function fetchProductFromExternal(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const { barcode } = req.validatedParams!;
+  if (!hasBarcodeParams(req)) {
+    res.status(400).json({ error: "INVALID_BARCODE" });
+    return;
+  }
+  
+  const { barcode } = req.validatedParams;
 
   try {
     const product = await productDataPipeline.fetchAndStoreProduct(barcode);
@@ -86,7 +98,12 @@ export async function bulkImportProducts(
   res: Response,
 ): Promise<void> {
   try {
-    const { searchTerms, limitPerTerm = 10 } = req.validatedBody!;
+    if (!hasBulkImportBody(req)) {
+      res.status(400).json({ error: "INVALID_REQUEST" });
+      return;
+    }
+    
+    const { searchTerms, limitPerTerm = 10 } = req.validatedBody;
 
     if (
       !searchTerms ||

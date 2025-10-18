@@ -15,7 +15,7 @@ export function validateRequest<BodyType = unknown>(
       const validationResult = schema.parse(req.body);
       
       // Attach validated data to request object
-      (req as any).validatedBody = validationResult;
+      req.validatedBody = validationResult;
       
       next();
     } catch (error) {
@@ -56,7 +56,7 @@ export function validateParams<ParamsType = unknown>(
       const validationResult = schema.parse(req.params);
       
       // Attach validated params to request object
-      (req as any).validatedParams = validationResult;
+      req.validatedParams = validationResult;
       
       next();
     } catch (error) {
