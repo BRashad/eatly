@@ -11,9 +11,11 @@
     "lint": "npm run lint --workspaces --if-present",
     "dev": "npm --workspace backend run dev",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "prettier": "^3.3.3"
   },
   "main": "App.tsx",

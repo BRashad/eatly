@@ -1,0 +1,11 @@
+echo "🔍 Running TypeScript type checking..."
+npm run type-check
+
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript type checking failed. Please fix the type errors before committing."
+  echo ""
+  echo "🛠️  To check type errors manually, run: npm run type-check"
+  exit 1
+fi
+
+echo "✅ TypeScript type checking passed! Committing..."
