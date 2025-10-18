@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Vibration } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Camera, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
-import {BarCodeFormat, scanBarcodes} from 'vision-camera-code-scanner';
-import { router } from 'expo-router';
+// import {BarCodeFormat, scanBarcodes} from 'vision-camera-code-scanner'; // TODO: install vision-camera-code-scanner
 
 interface BarcodeScannerProps {
+  /**
+   * Callback function triggered when a barcode is successfully scanned.
+   * Should be memoized with useCallback to prevent frame processor recreations.
+   */
   onBarcodeScanned: (barcode: string) => void;
 }
 
@@ -12,16 +15,16 @@ export default function BarcodeScanner({ onBarcodeScanned }: BarcodeScannerProps
   const [hasPermission, setHasPermission] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
   const devices = useCameraDevices();
-  const device = devices.back;
+  const device = devices.find(d => d.position === 'back');
 
   useEffect(() => {
     (async () => {
       const status = await Camera.getCameraPermissionStatus();
-      if (status === 'authorized') {
+      if (status === 'granted') {
         setHasPermission(true);
       } else {
         const newStatus = await Camera.requestCameraPermission();
-        setHasPermission(newStatus === 'authorized');
+        setHasPermission(newStatus === 'granted');
       }
     })();
   }, []);
@@ -30,17 +33,18 @@ export default function BarcodeScanner({ onBarcodeScanned }: BarcodeScannerProps
     'worklet';
     if (!isScanning) return;
 
-    const detectedBarcodes = scanBarcodes(frame, [BarCodeFormat.QR_CODE, BarCodeFormat.EAN_13, BarCodeFormat.EAN_8, BarCodeFormat.UPC_A, BarCodeFormat.UPC_E]);
-    
-    if (detectedBarcodes.length > 0) {
-      const barcode = detectedBarcodes[0].displayValue;
-      if (barcode) {
-        setIsScanning(false);
-        Vibration.vibrate(100);
-        runOnJS(onBarcodeScanned)(barcode);
-      }
-    }
-  }, [isScanning, onBarcodeScanned]);
+    // TODO: Implement barcode scanning once vision-camera-code-scanner is installed
+    // const detectedBarcodes = scanBarcodes(frame, [BarCodeFormat.QR_CODE, BarCodeFormat.EAN_13, BarCodeFormat.EAN_8, BarCodeFormat.UPC_A, BarCodeFormat.UPC_E]);
+    // 
+    // if (detectedBarcodes.length > 0) {
+    //   const barcode = detectedBarcodes[0].displayValue;
+    //   if (barcode) {
+    //     setIsScanning(false);
+    //     Vibration.vibrate(100);
+    //     runOnJS(onBarcodeScanned)(barcode);
+    //   }
+    // }
+  }, [isScanning]); // Note: onBarcodeScanned should be memoized with useCallback in parent
 
   const resetScanner = () => {
     setIsScanning(true);
@@ -69,7 +73,7 @@ export default function BarcodeScanner({ onBarcodeScanned }: BarcodeScannerProps
         device={device}
         isActive={true}
         frameProcessor={frameProcessor}
-        frameProcessorFps={5}
+
       />
       <View style={styles.overlay}>
         <View style={styles.targetBox}>
@@ -82,9 +86,11 @@ export default function BarcodeScanner({ onBarcodeScanned }: BarcodeScannerProps
           Position barcode within the frame
         </Text>
         {!isScanning && (
-          <Text style={styles.resetText} onPress={resetScanner}>
-            Tap to scan again
-          </Text>
+          <Pressable onPress={resetScanner}>
+            <Text style={styles.resetText}>
+              Tap to scan again
+            </Text>
+          </Pressable>
         )}
       </View>
     </View>

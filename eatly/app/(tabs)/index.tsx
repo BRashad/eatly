@@ -5,15 +5,19 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import BarcodeScanner from '@/components/BarcodeScanner';
 import { apiService } from '@/services/api';
+import { Colors } from '@/constants/theme';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function HomeScreen() {
   const [showScanner, setShowScanner] = useState(false);
+  const primaryColor = useThemeColor({}, 'primary');
+  const successColor = useThemeColor({}, 'success');
+  const cardColor = useThemeColor({}, 'card');
+  const styles = getStyles(primaryColor, successColor, cardColor);
 
   const handleBarcodeScanned = async (barcode: string) => {
     try {
-      console.log('🔍 Barcode scanned:', barcode);
-      console.log('🔍 Barcode type:', typeof barcode);
-      console.log('🔍 Barcode length:', barcode?.length);
+
       
       // Try to get product info
       const response = await apiService.getProductByBarcode(barcode);
@@ -39,7 +43,7 @@ export default function HomeScreen() {
           ]
         );
       }
-    } catch (error) {
+    } catch {
       Alert.alert(
         'Error',
         'Failed to fetch product information. Please check your connection and try again.',
@@ -59,20 +63,19 @@ export default function HomeScreen() {
   };
 
   const testKnownBarcodes = async () => {
-    const barcodes = [
-      '3228857000906', // Harry's Bread
-      '5449000000996', // Coca-Cola
-      '5449000131805', // Coca-Cola Zero
-    ];
+    const testBarcodes = {
+      '3228857000906': "Harry's Bread",
+      '5449000000996': 'Coca-Cola',
+      '5449000131805': 'Coca-Cola Zero',
+    };
     
     Alert.alert(
       'Test Barcodes',
       'Choose a barcode to test:',
       [
-        ...barcodes.map((barcode) => ({
-          text: `${barcode} - ${barcode === '3228857000906' ? 'Harry\'s Bread' : barcode === '5449000000996' ? 'Coca-Cola' : 'Coca-Cola Zero'}`,
+        ...Object.entries(testBarcodes).map(([barcode, name]) => ({
+          text: `${barcode} - ${name}`,
           onPress: () => {
-            console.log('🧪 Testing with barcode:', barcode);
             handleBarcodeScanned(barcode);
           }
         })),
@@ -140,7 +143,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (primaryColor: string, successColor: string, cardColor: string) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scanButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: primaryColor,
     paddingVertical: 20,
     paddingHorizontal: 40,
     borderRadius: 12,
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   testButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: successColor,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 12,
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   feature: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: cardColor,
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,

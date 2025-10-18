@@ -1,9 +1,10 @@
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 
 const API_BASE_URL = Platform.select({
-  ios: 'http://localhost:5001/api',
-  android: 'http://10.0.2.2:5001/api',
-  default: 'http://localhost:5001/api',
+  ios: Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5001/api',
+  android: Constants.expoConfig?.extra?.apiUrl || 'http://10.0.2.2:5001/api',
+  default: Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5001/api',
 });
 
 export interface ProductDetail {
@@ -54,7 +55,16 @@ class ApiService {
       };
 
       const response = await fetch(url, config);
-      const data = await response.json();
+      
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        return {
+          success: false,
+          error: `Failed to parse response: ${response.statusText}`,
+        };
+      }
 
       if (!response.ok) {
         return {

@@ -78,8 +78,6 @@ export const environment: EnvironmentConfig = {
     username: requireEnv("OPENFOODFACTS_USERNAME"),
     password: requireEnv("OPENFOODFACTS_PASSWORD"),
     userAgent: requireEnv("OPENFOODFACTS_USER_AGENT", "FoodScanApp/1.0 (unknown@example.com)"),
-    baseUrl: nodeEnv === "development" 
-      ? "https://world.openfoodfacts.org" 
-      : "https://world.openfoodfacts.org",
+    baseUrl: "https://world.openfoodfacts.org",
   },
 };

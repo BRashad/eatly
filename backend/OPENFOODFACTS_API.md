@@ -8,9 +8,9 @@ The API credentials are configured in the `.env` file:
 
 ```bash
 # Open Food Facts API credentials
-OPENFOODFACTS_USERNAME=rashadabayram@gmail.com
-OPENFOODFACTS_PASSWORD=OpenFood2025@
-OPENFOODFACTS_USER_AGENT=FoodScanApp/1.0 (rashadabayram@gmail.com)
+OPENFOODFACTS_USERNAME=your_openfoodfacts_username
+OPENFOODFACTS_PASSWORD=your_openfoodfacts_password
+OPENFOODFACTS_USER_AGENT=YourAppName/1.0 (your_email@example.com)
 ```
 
 ## Features Enabled

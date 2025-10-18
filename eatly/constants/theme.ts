@@ -16,6 +16,9 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    primary: '#007AFF', // iOS blue for primary actions
+    success: '#28a745', // Green for success actions
+    card: '#f8f9fa', // Light background for cards and features
   },
   dark: {
     text: '#ECEDEE',
@@ -24,6 +27,9 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    primary: '#0A84FF', // Lighter blue for dark mode
+    success: '#30D158', // Brighter green for dark mode
+    card: '#1C1C1E', // Dark background for cards and features
   },
 };
 
