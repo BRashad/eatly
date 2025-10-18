@@ -69,15 +69,21 @@ export const environment: EnvironmentConfig = {
   databaseUrl: requireEnv(
     "DATABASE_URL",
     nodeEnv === "development"
-      ? "postgresql://postgres:postgres@localhost:5432/foodscan"
+      ? "postgresql://postgres:password@localhost:5432/foodscan" // Note: Change 'password' in local .env file
       : undefined,
   ),
   logLevel: validateLogLevel(process.env.LOG_LEVEL),
-  corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:8081,http://localhost:8082,http://localhost:8080,http://localhost:3000').split(','),
+  corsOrigins: (
+    process.env.CORS_ORIGINS ??
+    "http://localhost:8081,http://localhost:8082,http://localhost:8080,http://localhost:3000"
+  ).split(","),
   openFoodFacts: {
     username: requireEnv("OPENFOODFACTS_USERNAME"),
     password: requireEnv("OPENFOODFACTS_PASSWORD"),
-    userAgent: requireEnv("OPENFOODFACTS_USER_AGENT", "FoodScanApp/1.0 (unknown@example.com)"),
+    userAgent: requireEnv(
+      "OPENFOODFACTS_USER_AGENT",
+      "FoodScanApp/1.0 (unknown@example.com)",
+    ),
     baseUrl: "https://world.openfoodfacts.org",
   },
 };
